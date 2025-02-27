@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Student {
+  id     String        @id
+  nisn   String        @unique
+  name   String        @unique
+  grade  Int
+  group  String        @default("A")
+  sd     Boolean       @default(false)
+  smp    Boolean       @default(false)
+  sma    Boolean       @default(false)
+  alumni Boolean       @default(false)
+  fouls  StudentFoul[]
+}
+
+model StudentFoul {
+  id         String       @id @default(uuid())
+  student    Student      @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  studentId  String
+  activity   FoulActivity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  activityId String
+  date       DateTime
+}
+
+model FoulActivity {
+  id          String        @id @default(uuid())
+  activity    String        @unique
+  description String?
+  point       Int
+  fouls       StudentFoul[]
+}
+
+//AUTH
+model User {
+  id     String   @id @default(uuid())
+  name   String
+  access Access[]
+}
+
+model Access {
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  grade  Int
+  group  String
+
+  @@id([userId, grade, group])
+}
