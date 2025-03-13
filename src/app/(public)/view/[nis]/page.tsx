@@ -15,7 +15,7 @@ export default async function Page({ searchParams, params }: PageProps) {
   const { before, after, order } = await searchParams;
   const { nis } = await params;
   const student = await prisma.student.findUnique({
-    where: { nisn: nis },
+    where: { nis: nis },
     include: {
       fouls: {
         include: { activity: true },

@@ -68,7 +68,7 @@ export default function DashboardLayout({
                       render={({ title, url }) => (
                         <SidebarMenuItem key={title}>
                           <SidebarMenuButton asChild>
-                            <a href={url}>
+                            <a href={`/dashboard/${url}`}>
                               <span>{title}</span>
                             </a>
                           </SidebarMenuButton>
@@ -82,10 +82,10 @@ export default function DashboardLayout({
           />
         </SidebarContent>
       </Sidebar>
-      <main className="w-full">
+      <nav className="sticky">
         <SidebarTrigger />
-        {children}
-      </main>
+      </nav>
+      <main className="w-full min-h-screen">{children}</main>
     </SidebarProvider>
   );
 }

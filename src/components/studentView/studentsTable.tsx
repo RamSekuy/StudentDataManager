@@ -1,7 +1,6 @@
 "use client";
 
 import FillterInput from "@/components/fillter/fillterInput";
-import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/ui/dataTable";
 import { Link2Icon } from "lucide-react";
@@ -66,9 +65,6 @@ export default function StudentTable({ students }: { students: Student[] }) {
             queryKey="grade"
             placeholder="Search by grade"
           />
-          <Link href={"/foul"}>
-            <Button variant="destructive">Tambah Pelanggaran</Button>
-          </Link>
         </div>
       )}
       columns={studentsTableFormat}

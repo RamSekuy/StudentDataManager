@@ -1,10 +1,10 @@
 import StudentTable from "../../../components/studentView/studentsTable";
 import { prisma } from "@/lib/prisma";
-type Prop = {
+type Props = {
   searchParams: Promise<{ name?: string; grade?: string }>;
 };
 
-export default async function Page({ searchParams }: Prop) {
+export default async function Page({ searchParams }: Props) {
   const { name, grade } = await searchParams;
   const students = await prisma.student.findMany({
     where: {
@@ -14,7 +14,7 @@ export default async function Page({ searchParams }: Prop) {
   });
   return (
     <div className="w-full h-full flex flex-col items-center my-5 px-5">
-      <h1 className="text-4xl font-bold my-5">Daftar SISWA</h1>
+      <h1 className="text-4xl font-bold my-5">Student List</h1>
       <StudentTable students={students} />
     </div>
   );

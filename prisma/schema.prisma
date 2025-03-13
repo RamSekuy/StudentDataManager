@@ -9,8 +9,8 @@ datasource db {
 }
 
 model Student {
-  id     String        @id
-  nisn   String        @unique
+  id     String        @id @default(uuid())
+  nis    String        @unique
   name   String        @unique
   grade  Int
   group  String        @default("A")
