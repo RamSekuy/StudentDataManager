@@ -11,6 +11,8 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import EachUtils from "@/components/utils/eachUtils";
+import { Loader2 } from "lucide-react";
+import { Suspense } from "react";
 
 const getData = [
   {
@@ -82,10 +84,21 @@ export default function DashboardLayout({
           />
         </SidebarContent>
       </Sidebar>
-      <nav className="sticky">
-        <SidebarTrigger />
+      <main className="w-full min-h-screen">
+      <nav className="sticky w-full">
+        <SidebarTrigger className="fixed"/>
+        <h1 className="text-center text-2xl font-semibold my-4">DASHBOARD</h1>
       </nav>
-      <main className="w-full min-h-screen">{children}</main>
+        <Suspense
+          fallback={
+            <div className="flex items-center justify-center w-full h-screen">
+              <Loader2 size={80} />
+            </div>
+          }
+        >
+          {children}
+        </Suspense>
+      </main>
     </SidebarProvider>
   );
 }

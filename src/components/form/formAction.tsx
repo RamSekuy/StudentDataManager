@@ -1,20 +1,23 @@
 "use client";
-import { ActionForm } from "@/actions/actionForm.class";
+import createFormAction from "@/actions/createFormAction";
 import { ReactNode, useState } from "react";
 import { toast } from "sonner";
 
 type FormActionProps = {
-  action: ActionForm<unknown>["execute"];
+  action: ReturnType<typeof createFormAction>;
   children: ReactNode;
   className?: string;
+  onSuccess?: () => void;
 };
 
 export default function FormAction({
   action,
   children,
   className,
+  onSuccess = () => {},
 }: FormActionProps) {
   const [loading, setLoading] = useState(false);
+
   return (
     <form
       className={className}
@@ -26,14 +29,24 @@ export default function FormAction({
         const promise = action(new FormData(e.currentTarget));
         toast.promise(promise, {
           loading: "Loading...",
-          success: (e) => ({
-            style: { background: "green", color: "white" },
-            message: e.message,
-          }),
-          error: (e) => ({
-            style: { background: "red", color: "white" },
-            message: e.message,
-          }),
+          success: (res) => {
+            const err = res.error as Error;
+            if (err) {
+              return {
+                style: { color: "white", background: "red" },
+                message: `ERROR: ${err}`,
+              };
+            }
+            onSuccess();
+            return {
+              style: { color: "green" },
+              message: res.message,
+            };
+          },
+          error: (e) => {
+            console.log(e);
+            return "Error: " + e?.error?.message;
+          },
           finally: () => setLoading(false),
         });
       }}

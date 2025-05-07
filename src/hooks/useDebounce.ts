@@ -6,7 +6,7 @@ type DebounceOptions = {
 };
 export default function useDebounce(
   callback: () => void,
-  { delay = 500, triggerValues = [] }: DebounceOptions
+  { delay = 300, triggerValues = [] }: DebounceOptions
 ) {
   const [timer, setTimer] = useState<NodeJS.Timeout>();
   useEffect(() => {

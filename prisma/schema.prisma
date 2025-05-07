@@ -9,47 +9,81 @@ datasource db {
 }
 
 model Student {
-  id     String        @id @default(uuid())
-  nis    String        @unique
-  name   String        @unique
-  grade  Int
-  group  String        @default("A")
-  sd     Boolean       @default(false)
-  smp    Boolean       @default(false)
-  sma    Boolean       @default(false)
-  alumni Boolean       @default(false)
-  fouls  StudentFoul[]
+  id       String        @id @default(uuid())
+  nis      String        @unique
+  name     String        @unique
+  grade    Int
+  sd       Boolean       @default(false)
+  smp      Boolean       @default(false)
+  sma      Boolean       @default(false)
+  alumni   Boolean       @default(false)
+  password String?
+  fouls    ReportedFoul[]
+  out Boolean @default(false)
 }
 
-model StudentFoul {
+model ReportedFoul {
   id         String       @id @default(uuid())
-  student    Student      @relation(fields: [studentId], references: [id], onDelete: Cascade)
   studentId  String
-  activity   FoulActivity @relation(fields: [activityId], references: [id], onDelete: Cascade)
-  activityId String
-  date       DateTime
+  student    Student      @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  grade Int
+  foulDetailId String
+  foulDetail   FoulDetail @relation(fields: [foulDetailId], references: [id], onDelete: Cascade)
+  date       DateTime @default(dbgenerated("NOW()"))
+  confirmed Boolean @default(false)
+  description String?
+  createdById String
+  createdBy Admin @relation(fields: [createdById], references: [id], onDelete: Cascade)
 }
 
-model FoulActivity {
+model Foul {
   id          String        @id @default(uuid())
   activity    String        @unique
   description String?
   point       Int
-  fouls       StudentFoul[]
+  foulDetails FoulDetail[]
+  grade String
+  category foulCategory
 }
 
-//AUTH
-model User {
-  id     String   @id @default(uuid())
-  name   String
-  access Access[]
+model FoulDetail {
+  id String        @id @default(uuid())
+  foulId String
+  foul Foul @relation(fields: [foulId], references: [id], onDelete: Cascade)
+  counsellor String
+  punishment String
+  reports       ReportedFoul[]
+  isOption Boolean @default(false)
 }
 
-model Access {
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  grade  Int
-  group  String
+enum foulCategory {
+  LOW
+  MEDIUM
+  HIGH
+}
 
-  @@id([userId, grade, group])
+model Admin {
+  id       String @id @default(uuid())
+  password String
+  name     String
+  email    String @unique
+  phone    String? @unique
+  accessLevel accessLevel[]
+  reportedFouls ReportedFoul[]
+}
+
+
+enum accessLevel {
+  StudentClass_1
+  StudentClass_2
+  StudentClass_3
+  StudentClass_4
+  StudentClass_5
+  StudentClass_7
+  StudentClass_8
+  StudentClass_9
+  StudentClass_10
+  StudentClass_11
+  StudentClass_12
+  SUPER_ADMIN
 }

@@ -12,7 +12,6 @@ export default function StudentTabContent({
 }: {
   students: Student[];
 }) {
-  const studentGrouping = false;
   const tableName = "selectedStudents";
   const selectedRows = useRowSelectionStore((s) => s.selectedRows)[tableName];
   const studentsTableFormat: ColumnDef<Student>[] = [
@@ -49,8 +48,7 @@ export default function StudentTabContent({
       cell: ({ row }) => (
         <p>
           {"kelas " +
-            row.original.grade +
-            (studentGrouping ? row.original.group : "")}
+            row.original.grade }
         </p>
       ),
     },

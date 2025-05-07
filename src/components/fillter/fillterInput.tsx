@@ -14,7 +14,7 @@ interface FillterInputProps extends InputHTMLAttributes<HTMLInputElement> {
 export default function FillterInput({
   queryKey,
   redirect = "replace",
-  debounce = 500,
+  debounce = 300,
   type = "text",
   ...props
 }: FillterInputProps) {

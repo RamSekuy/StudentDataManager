@@ -1,15 +1,22 @@
-import StudentTable from "../../../components/studentView/studentsTable";
+import StudentTable from "@/components/studentView/studentsTable";
+import ServerAuth from "@/lib/auth/serverAuth.class";
 import { prisma } from "@/lib/prisma";
+import { gradeLimit } from "@/lib/prisma/studentAccessLimit";
 type Props = {
   searchParams: Promise<{ name?: string; grade?: string }>;
 };
 
 export default async function Page({ searchParams }: Props) {
   const { name, grade } = await searchParams;
+  
+  const token = await new ServerAuth().getToken();
   const students = await prisma.student.findMany({
     where: {
       name: { contains: name },
-      grade: grade ? Number(grade) : undefined,
+     grade:{
+      equals: grade ? Number(grade) : undefined,
+      ...token.isSuperAdmin?{}:{in: await gradeLimit()}
+    }
     },
   });
   return (

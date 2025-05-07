@@ -1,16 +1,17 @@
 "use client";
-import addStudentFoul from "@/actions/addStudentFoul";
+import addStudentFoul from "@/actions/reportStudent";
 import { DatePicker } from "@/components/input/datePicker";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useRowSelectionStore } from "@/stores/rowSelectionStore";
-import { FoulActivity } from "@prisma/client";
-
+import { Foul } from "@prisma/client";
 import { useState } from "react";
+import { toast } from "sonner";
+
 export default function ReportTabContent({
   fouls: allFouls,
 }: {
-  fouls: FoulActivity[];
+  fouls: Foul[];
 }) {
   const store = useRowSelectionStore((s) => s);
   const students = store.selectedRows["selectedStudents"];
@@ -22,6 +23,7 @@ export default function ReportTabContent({
   }, 0);
   const dateState = useState(new Date());
   const disabled = !Boolean(students?.size) || !Boolean(fouls?.size);
+
   return (
     <Card className="flex flex-col text-center justify-center items-center py-8 px-12 w-max mx-auto">
       <p>Total Students : {students?.size || 0}</p>
@@ -35,19 +37,23 @@ export default function ReportTabContent({
         }-700 max-w-max px-4`}
         size={"lg"}
         disabled={disabled}
-        onClick={() =>
-          addStudentFoul({
+        onClick={() => {
+          const action = addStudentFoul({
             fouls: Array.from(fouls),
             students: Array.from(students),
             date: dateState[0],
-          })
-            .then(() => {
-              alert("berhasil ditambahkan");
+          });
+
+          toast.promise(action, {
+            loading: "Processing your request...",
+            success: () => {
               clear("selectedStudents");
               clear("selectedFouls");
-            })
-            .catch((e) => alert(e.message || "error"))
-        }
+              return "Success!"
+            },
+            error: (error:Error) => `Error: ${error.message || "Something went wrong"}`,
+          });
+        }}
       >
         Add Report
       </Button>

@@ -4,13 +4,13 @@ import { DataTable } from "@/components/ui/dataTable";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRowSelectionStore } from "@/stores/rowSelectionStore";
-import { FoulActivity } from "@prisma/client";
+import { Foul } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 
-export default function FoulTabContent({ fouls }: { fouls: FoulActivity[] }) {
+export default function FoulTabContent({ fouls }: { fouls: Foul[] }) {
   const tableName = "selectedFouls";
   const selectedFouls = useRowSelectionStore((s) => s.selectedRows)[tableName];
-  const foulsTableFormat: ColumnDef<FoulActivity>[] = [
+  const foulsTableFormat: ColumnDef<Foul>[] = [
     {
       accessorKey: "activity",
       header: "Activity",

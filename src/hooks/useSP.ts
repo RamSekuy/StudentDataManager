@@ -22,5 +22,5 @@ export default function useSP() {
     router.replace(`?${fillter.toString()}`);
   };
 
-  return { push, replace, sp };
+  return { push, replace, sp, router };
 }

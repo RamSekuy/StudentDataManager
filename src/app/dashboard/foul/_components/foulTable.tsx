@@ -1,15 +1,15 @@
 "use client";
 import FillterInput from "@/components/fillter/fillterInput";
 import { DataTable } from "@/components/ui/dataTable";
-import { FoulActivity } from "@prisma/client";
+import { Foul } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 
 export default function FoulTable({
   foulActivites,
 }: {
-  foulActivites: FoulActivity[];
+  foulActivites: Foul[];
 }) {
-  const foulsTableFormat: ColumnDef<FoulActivity>[] = [
+  const foulsTableFormat: ColumnDef<Foul>[] = [
     {
       accessorKey: "activity",
       header: "Activity",

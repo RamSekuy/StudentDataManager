@@ -1,13 +1,13 @@
-import { FoulActivity } from "@prisma/client";
 import { Input } from "../ui/input";
 import FormAction from "./formAction";
 import upsertFoul from "@/actions/upsertFoul";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { Textarea } from "../ui/textarea";
+import { Foul } from "@prisma/client";
 
 type Props = {
-  foulActivity?: FoulActivity;
+  foulActivity?: Foul;
 };
 
 export default function FoulForm({ foulActivity }: Props) {

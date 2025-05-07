@@ -1,10 +1,20 @@
 "use client";
-import FillerDateTime from "@/components/fillter/fillterDate";
 import FillterSelect from "@/components/fillter/fillterSelect";
 import useSP from "@/hooks/useSP";
+import { Button } from "../ui/button";
+import { usePathname } from "next/navigation";
+import { toast } from "sonner";
+import { FillterRangeDate } from "../fillter/FillterRangeDate";
+import {
+  Popover,
+  PopoverClose,
+  PopoverContent,
+  PopoverTrigger,
+} from "@radix-ui/react-popover";
 
 export default function FillterDetail() {
-  const { replace, sp } = useSP();
+  const pathname = usePathname();
+  const { replace, sp, router } = useSP();
   type FillterType = "all" | "30" | "7";
   const presetFillter = (select: FillterType) => {
     switch (select) {
@@ -31,34 +41,41 @@ export default function FillterDetail() {
         break;
     }
   };
+
+  const toPDF = () => {
+    toast("Exporting.....");
+    router.push(pathname + "/pdf?" + sp.toString());
+  };
   return (
-    <div className="w-full h-full flex justify-center items-center m-4 flex-col gap-5">
-      <div className="flex gap-2 justify-center items-center">
-        <FillerDateTime
-          queryKey="after"
-          label="After"
-          value={sp.get("after") || undefined}
-        />
-        {"-"}
-        <FillerDateTime
-          queryKey="before"
-          label="Before"
-          value={sp.get("after") || undefined}
-        />
-      </div>
-      <select
-        defaultValue={"all"}
-        onChange={({ target }) => presetFillter(target.value as FillterType)}
+    <div className="w-full h-full flex justify-center items-center m-4 flex-wrap gap-5">
+      <FillterRangeDate />
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button>Preset Time</Button>
+        </PopoverTrigger>
+        <PopoverClose>
+          <PopoverContent className="flex flex-col z-10">
+            <Button variant={"outline"} onClick={() => presetFillter("all")}>
+              All-Time
+            </Button>
+            <Button variant={"outline"} onClick={() => presetFillter("7")}>
+              Last 7 Days
+            </Button>
+            <Button variant={"outline"} onClick={() => presetFillter("30")}>
+              Last 30 Days
+            </Button>
+          </PopoverContent>
+        </PopoverClose>
+      </Popover>
+      <FillterSelect
+        queryKey="order"
+        defaultValue="desc"
         className="border p-2 rounded-md"
       >
-        <option value="all">Semua</option>
-        <option value="30">30 Hari Terakhir</option>
-        <option value="7">7 Hari Terakhir</option>
-      </select>
-      <FillterSelect queryKey="order" defaultValue="desc">
         <option value="desc">Desc</option>
         <option value="asc">Asc</option>
       </FillterSelect>
+      <Button onClick={toPDF}>Export to PDF</Button>
     </div>
   );
 }

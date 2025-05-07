@@ -1,31 +1,40 @@
 "use server";
 import { z } from "zod";
-import { ActionForm } from "./actionForm.class";
+import createFormAction from "./createFormAction";
 import { cookies } from "next/headers";
 import { generateToken } from "@/lib/jose";
-import { redirect } from "next/navigation";
+import { prisma } from "@/lib/prisma";
 
 const schema = z.object({
-  username: z.string().min(4),
+  email: z.string().email(),
   password: z.string().min(4),
 });
 
-const adminLoginAction = new ActionForm("Success Login", async (formData) => {
-  const data = Object.fromEntries(formData.entries());
-  const { username, password } = schema.parse(data);
-  const cookie = await cookies();
+const adminLoginAction = createFormAction({
+  action: async (data) => {
+    try {
+      const { email, password } = schema.parse(data);
+      const cookie = await cookies();
 
-  if (username === "SuperAdmin" && password === "SuperAdminPassword") {
-    const token = await generateToken("SUPER-ADMIN");
-    cookie.set("access", token);
-    new Promise((resolve) => setTimeout(resolve, 500)).then(() =>
-      redirect("/dashboard")
-    );
-  } else {
-    throw new Error("Invalid Login Data");
-  }
+      const adminData = await prisma.admin.findUnique({
+        where: { email },
+        select: {
+          id: true,
+          password: true,
+          accessLevel: true,
+          name: true,
+        },
+      });
+      if (!adminData) throw new Error("Admin not found");
+      if (adminData.password !== password) throw new Error("Invalid password");
+
+      const token = await generateToken(adminData);
+      cookie.set("auth", token);
+    } catch (e) {
+      let msg = "ERROR";
+      if (e instanceof Error) msg = e.message;
+      return { error: msg };
+    }
+  },
 });
-
-export default async function adminLogin(formData: FormData) {
-  return await adminLoginAction.execute(formData);
-}
+export default adminLoginAction;

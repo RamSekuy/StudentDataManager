@@ -8,7 +8,6 @@ import Link from "next/link";
 import { Student } from "@prisma/client";
 
 export default function StudentTable({ students }: { students: Student[] }) {
-  const studentGrouping = false;
   const studentsTableFormat: ColumnDef<Student>[] = [
     {
       header: ({ column }) => {
@@ -35,8 +34,7 @@ export default function StudentTable({ students }: { students: Student[] }) {
       accessorKey: "grade",
       cell: ({ row }) => (
         <p>
-          Kelas{" "}
-          {row.original.grade + (studentGrouping ? row.original.group : "")}
+          Kelas {row.original.grade}
         </p>
       ),
     },
@@ -47,7 +45,7 @@ export default function StudentTable({ students }: { students: Student[] }) {
         <div className="flex justify-end px-4">
           <Link
             className="text-green-600 hover:bg-gray-200 hover:text-green-400 rounded-full"
-            href={`/student/${row.original.id}`}
+            href={`/dashboard/student/${row.original.id}`}
           >
             <Link2Icon size={36} className="px-2" />
           </Link>

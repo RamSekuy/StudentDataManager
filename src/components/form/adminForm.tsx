@@ -1,30 +1,38 @@
+"use client";
+
+import FormAction from "./formAction";
 import adminLogin from "@/actions/adminLogin";
+import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import FormAction from "./formAction";
 
 export default function AdminForm() {
+  const router = useRouter();
+
   return (
-    <FormAction action={adminLogin}>
+    <FormAction
+      action={adminLogin}
+      onSuccess={() => router.push("/dashboard/student")}
+    >
       <table className="mx-auto border-separate border-spacing-y-4 border-spacing-x-2">
         <tbody>
           <tr>
-            <th>Username</th>
-            <th>
-              <Input name="username" />
-            </th>
+            <th>Email</th>
+            <td>
+              <Input name="email" />
+            </td>
           </tr>
           <tr>
             <th>Password</th>
-            <th>
-              <Input name="password" />
-            </th>
+            <td>
+              <Input name="password" type="password"/>
+            </td>
           </tr>
         </tbody>
-        <div className="flex justify-center">
-          <Button type="submit">Submit</Button>
-        </div>
       </table>
+      <div className="flex justify-center mt-4">
+        <Button type="submit">Submit</Button>
+      </div>
     </FormAction>
   );
 }

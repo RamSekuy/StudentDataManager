@@ -1,7 +1,7 @@
 import AdminForm from "@/components/form/adminForm";
 import StudentNIS from "@/components/input/studentNIS";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger,DialogTitle } from "@/components/ui/dialog";
 
 export default function Home() {
   return (
@@ -18,6 +18,7 @@ export default function Home() {
           <Button>Continue as Admin</Button>
         </DialogTrigger>
         <DialogContent>
+          <DialogTitle className="text-center">Admin Login</DialogTitle>
           <AdminForm />
         </DialogContent>
       </Dialog>

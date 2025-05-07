@@ -12,9 +12,9 @@ export async function StudenttContent() {
 
 export async function FoulContent() {
   const FoulTabContent = dynamic(() => import("./foulTabContent"));
-  return <FoulTabContent fouls={await prisma.foulActivity.findMany()} />;
+  return <FoulTabContent fouls={await prisma.foul.findMany()} />;
 }
 
 export async function ReportContent() {
-  return <ReportTabContent fouls={await prisma.foulActivity.findMany()} />;
+  return <ReportTabContent fouls={await prisma.foul.findMany()} />;
 }

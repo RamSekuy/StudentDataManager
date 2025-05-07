@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
 import StudentView from "@/components/studentView/studentView";
-import { StudentFull } from "@/app/type/prismaExtend.type";
 
 type PageProps = {
   searchParams: Promise<{
@@ -15,15 +14,21 @@ export default async function Page({ searchParams, params }: PageProps) {
   const { before, after, order } = await searchParams;
   const { nis } = await params;
   const student = await prisma.student.findUnique({
-    where: { nis: nis },
+    where: { nis },
     include: {
       fouls: {
-        include: { activity: true },
+        include: { foulDetail: { include: { foul: true } } },
         orderBy: { date: order },
-        where: { date: { gte: after, lte: before } },
+        where: {
+          date: {
+            gte: after ? new Date(after) : undefined,
+            lte: before ? new Date(before) : undefined,
+          },
+        },
       },
     },
   });
+
   if (!student) throw new Error("Student Data Not Found");
-  return <StudentView student={student as StudentFull} />;
+  return <StudentView student={student} />;
 }
